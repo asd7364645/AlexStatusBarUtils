@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:id="@+id/one" android:checkableBehavior="single">
+        <item
+            android:checkable="true"
+            android:title="item_1" />
+        <item
+            android:checkable="true"
+            android:title="item_2" />
+        <item
+            android:checkable="true"
+            android:title="item_3" />
+    </group>
+    <group android:id="@+id/two" android:checkableBehavior="single">
+        <item
+            android:checkable="true"
+            android:title="item_4" />
+        <item
+            android:checkable="true"
+            android:title="item_5" />
+    </group>
+
+    <item android:title="其他">
+        <menu>
+            <item android:title="我" />
+            <item android:title="图片" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.statusbar_alexleo.alexstatusbarutils.ImgStatusAct">
+
+    <ImageView
+        android:id="@+id/img_status_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/hzw2" />
+
+    <android.support.v7.widget.Toolbar
+        android:fitsSystemWindows="true"
+        android:id="@+id/img_status_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <include layout="@layout/status_control_layout"
+        android:id="@+id/include2" />
+
+    <CheckBox
+        android:id="@+id/img_status_checkbox"
+        android:text="全透明状态栏"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/include2"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="更换图片"
+        android:id="@+id/img_status_change_img_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/include2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp" />
+    <Button
+        android:text="加载网络图片"
+        android:id="@+id/img_status_load_img_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_status_change_img_btn"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
