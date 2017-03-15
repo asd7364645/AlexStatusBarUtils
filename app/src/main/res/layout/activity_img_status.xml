@@ -10,11 +10,11 @@
         android:id="@+id/img_status_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/hzw2" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <android.support.v7.widget.Toolbar
-        android:fitsSystemWindows="true"
         android:id="@+id/img_status_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,6 +22,39 @@
 
     <include layout="@layout/status_control_layout"
         android:id="@+id/include2" />
+
+    <TextView
+        android:text="RGB"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/include2"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:max="255"
+        android:id="@+id/img_status_r_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/include2"
+        android:layout_marginTop="40dp" />
+    <SeekBar
+        android:max="255"
+        android:id="@+id/img_status_g_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_status_r_seek"
+        android:layout_marginTop="15dp" />
+    <SeekBar
+        android:max="255"
+        android:id="@+id/img_status_b_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/img_status_g_seek"
+        />
 
     <CheckBox
         android:id="@+id/img_status_checkbox"
@@ -37,15 +70,18 @@
         android:id="@+id/img_status_change_img_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/include2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp" />
+        android:layout_alignBaseline="@+id/img_status_load_img_btn"
+        android:layout_alignBottom="@+id/img_status_load_img_btn"
+        android:layout_toLeftOf="@+id/img_status_checkbox"
+        android:layout_toStartOf="@+id/img_status_checkbox" />
     <Button
         android:text="加载网络图片"
         android:id="@+id/img_status_load_img_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/img_status_change_img_btn"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/img_status_checkbox"
+        android:layout_toEndOf="@+id/img_status_checkbox" />
 
 </RelativeLayout>

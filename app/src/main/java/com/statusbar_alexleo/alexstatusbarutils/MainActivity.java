@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NavigationView main_navigation;
     private DrawerLayout main_drawer;
     private Toolbar main_toolbar;
-    private Button main_common_toolbar_btn, main_img_act_btn, main_scroll_tb_act_btn;
+    private Button main_common_toolbar_btn, main_img_act_btn, main_scroll_tb_act_btn
+            ,main_scroll_tb_dl_act_btn,main_scroll_img_act_btn,main_fragment_act_btn;
     private Intent intent;
 
     @Override
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         main_common_toolbar_btn = (Button) findViewById(R.id.main_common_toolbar_btn);
+        main_fragment_act_btn = (Button) findViewById(R.id.main_fragment_act_btn);
+        main_scroll_tb_dl_act_btn = (Button) findViewById(R.id.main_scroll_tb_dl_act_btn);
+        main_scroll_img_act_btn = (Button) findViewById(R.id.main_scroll_img_act_btn);
         main_drawer = (DrawerLayout) findViewById(R.id.main_drawer);
         main_navigation = (NavigationView) findViewById(R.id.main_navigation);
         main_img_act_btn = (Button) findViewById(R.id.main_img_act_btn);
@@ -41,12 +46,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         main_drawer.addDrawerListener(toggle);
         toggle.syncState();
         main_common_toolbar_btn.setOnClickListener(this);
+        main_fragment_act_btn.setOnClickListener(this);
+        main_scroll_img_act_btn.setOnClickListener(this);
+        main_scroll_tb_dl_act_btn.setOnClickListener(this);
         main_img_act_btn.setOnClickListener(this);
         main_scroll_tb_act_btn.setOnClickListener(this);
         main_navigation.setNavigationItemSelectedListener(this);
 
         //----------------------------------
-        AlexStatusBarUtils.setDrawerStatusColor(this,122);
+        AlexStatusBarUtils.setDrawerStatusColor(this,main_drawer, ContextCompat.getColor(this,R.color.colorPrimary),0);
 
     }
 
@@ -64,6 +72,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.main_img_act_btn:
                 intent = new Intent(this, ImgStatusAct.class);
+                startActivity(intent);
+                break;
+            case R.id.main_scroll_tb_dl_act_btn:
+                intent = new Intent(this, ScrollTbAndDlAct.class);
+                startActivity(intent);
+                break;
+            case R.id.main_scroll_img_act_btn:
+                intent = new Intent(this, ScrollingImgActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.main_fragment_act_btn:
+                intent = new Intent(this, FragmentAct.class);
                 startActivity(intent);
                 break;
         }

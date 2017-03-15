@@ -21,7 +21,15 @@
         </activity>
         <activity android:name=".CommonToolbarAct" />
         <activity android:name=".ImgStatusAct" />
-        <activity android:name=".ScrollToolBarAct"></activity>
+        <activity android:name=".ScrollToolBarAct" />
+        <activity android:name=".ScrollTbAndDlAct" />
+        <activity
+            android:name=".ScrollingImgActivity"
+            android:label="@string/title_activity_scrolling_img"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FragmentAct"
+            android:label="@string/title_activity_fragment"></activity>
     </application>
 
 </manifest>

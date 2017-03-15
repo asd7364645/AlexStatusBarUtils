@@ -24,21 +24,20 @@ public class ImgStatusAct extends AppCompatActivity implements SeekBar.OnSeekBar
     private Button img_status_change_img_btn, img_status_load_img_btn;
     private Toolbar img_status_toolbar;
     private TextView status_text;
-    private SeekBar status_seek;
+    private SeekBar status_seek,
+            img_status_r_seek,
+            img_status_g_seek,
+            img_status_b_seek;
     private String progress;
+    private int r,g,b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_img_status);
 
-        img_status_img = (ImageView) findViewById(R.id.img_status_img);
-        img_status_toolbar = (Toolbar) findViewById(R.id.img_status_toolbar);
-        img_status_change_img_btn = (Button) findViewById(R.id.img_status_change_img_btn);
-        img_status_checkbox = (CheckBox) findViewById(R.id.img_status_checkbox);
-        img_status_load_img_btn = (Button) findViewById(R.id.img_status_load_img_btn);
-        status_text = (TextView) findViewById(R.id.status_text);
-        status_seek = (SeekBar) findViewById(R.id.status_seek);
+        findViews();
+
         setSupportActionBar(img_status_toolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -47,12 +46,28 @@ public class ImgStatusAct extends AppCompatActivity implements SeekBar.OnSeekBar
         progress = "" + status_seek.getProgress();
         status_text.setText(progress);
         status_seek.setOnSeekBarChangeListener(this);
+        img_status_r_seek.setOnSeekBarChangeListener(this);
+        img_status_g_seek.setOnSeekBarChangeListener(this);
+        img_status_b_seek.setOnSeekBarChangeListener(this);
         img_status_checkbox.setOnCheckedChangeListener(this);
         img_status_change_img_btn.setOnClickListener(this);
         img_status_load_img_btn.setOnClickListener(this);
         //--------------------------
-        AlexStatusBarUtils.setImageViewTranslucent(this, 122);
+        AlexStatusBarUtils.setTranslucentStatusBar(this, img_status_toolbar, 122);
 
+    }
+
+    private void findViews() {
+        img_status_img = (ImageView) findViewById(R.id.img_status_img);
+        img_status_toolbar = (Toolbar) findViewById(R.id.img_status_toolbar);
+        img_status_change_img_btn = (Button) findViewById(R.id.img_status_change_img_btn);
+        img_status_checkbox = (CheckBox) findViewById(R.id.img_status_checkbox);
+        img_status_load_img_btn = (Button) findViewById(R.id.img_status_load_img_btn);
+        status_text = (TextView) findViewById(R.id.status_text);
+        status_seek = (SeekBar) findViewById(R.id.status_seek);
+        img_status_r_seek = (SeekBar) findViewById(R.id.img_status_r_seek);
+        img_status_g_seek = (SeekBar) findViewById(R.id.img_status_g_seek);
+        img_status_b_seek = (SeekBar) findViewById(R.id.img_status_b_seek);
     }
 
     @Override
@@ -68,10 +83,27 @@ public class ImgStatusAct extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        this.progress = progress + "";
-        status_text.setText(this.progress);
+        switch (seekBar.getId()){
+            case R.id.status_seek:
+                this.progress = progress + "";
+                status_text.setText(this.progress);
+                AlexStatusBarUtils.setARGBStatusBar(this,img_status_toolbar,r,g,b,progress);
+//                AlexStatusBarUtils.setTranslucentStatusBar(this, img_status_toolbar, progress);
+                break;
+            case R.id.img_status_r_seek:
+                r = progress;
+                AlexStatusBarUtils.setARGBStatusBar(this,img_status_toolbar,r,g,b, Integer.parseInt(this.progress));
+                break;
+            case R.id.img_status_g_seek:
+                g = progress;
+                AlexStatusBarUtils.setARGBStatusBar(this,img_status_toolbar,r,g,b, Integer.parseInt(this.progress));
+                break;
+            case R.id.img_status_b_seek:
+                b = progress;
+                AlexStatusBarUtils.setARGBStatusBar(this,img_status_toolbar,r,g,b, Integer.parseInt(this.progress));
+                break;
+        }
 
-        AlexStatusBarUtils.setImageViewTranslucent(this, progress);
     }
 
     @Override
@@ -103,10 +135,10 @@ public class ImgStatusAct extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            AlexStatusBarUtils.setImageViewTransparent(this);
+            AlexStatusBarUtils.setTransparentStatusBar(this, img_status_toolbar);
             status_seek.setEnabled(false);
         } else {
-            AlexStatusBarUtils.setImageViewTranslucent(this, 122);
+            AlexStatusBarUtils.setTranslucentStatusBar(this, img_status_toolbar, 122);
             status_seek.setEnabled(true);
         }
     }

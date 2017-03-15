@@ -19,18 +19,18 @@ import android.widget.LinearLayout;
 /**
  * Created by Alex on 2017/3/2.
  * Alex
- * drawerLayout有些问题，等待修复
- * 参考：
- * {http://blog.csdn.net/Mtee_Yu/article/details/53033559?locationNum=14&fps=1}
  */
 
 public class AlexStatusBarUtils {
 
+    public static final int IS_SET_PADDING_KEY = 54648632;
     private static final int FAKE_STATUS_VIEW = R.id.status_view;
     private static final int FAKE_TRANSLUCENT_VIEW_ID = R.id.translucent_view;
 
+    //------------单色明暗度状态栏------------
+
     /**
-     * 设置普通toolbar中状态栏颜色
+     * 设置普通toolbar中状态栏颜色以及明暗度
      *
      * @param activity
      * @param color
@@ -40,7 +40,7 @@ public class AlexStatusBarUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            activity.getWindow().setStatusBarColor(calculateStatusColor(color, statusBarAlpha));
+            activity.getWindow().setStatusBarColor(statusColorIntensity(color, statusBarAlpha));
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             setStatusViewToAct(activity, color, statusBarAlpha);
@@ -48,39 +48,27 @@ public class AlexStatusBarUtils {
         }
     }
 
+    /**
+     * 设置普通toolbar中状态栏颜色
+     *
+     * @param activity
+     * @param color
+     */
     public static void setStatusColor(Activity activity, @ColorInt int color) {
         setStatusColor(activity, color, 0);
     }
 
     /**
-     * 设置普通toolbar中状态栏透明度
-     *
-     * @param activity
-     * @param statusBarAlpha
-     * @deprecated 很少会用到这个
-     */
-    public static void setStatusAlpha(Activity activity, int statusBarAlpha) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            activity.getWindow().setStatusBarColor(Color.argb(statusBarAlpha, 0, 0, 0));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            setTranslucentStatusViewToAct(activity, statusBarAlpha);
-            setRootView(activity);
-        }
-    }
-
-    /**
      * 设置toolbar带drawerLayout状态栏透明度,5.0以上使用默认系统的第二颜色colorPrimaryDark
      * 但是drawerLayout打开的时候会有一条statusbar高度的半透明条
-     * 注：必须将drawerLayout设置android:fitsSystemWindows="true",
-     * 内容布局要把toolbar设置android:fitsSystemWindows="true"
+     * 注：必须将drawerLayout设置android:fitsSystemWindows="true"
+     * 还有下方的toolbar，
+     * 一般不要设置滑动toolbar,在4.4系统会有问题，下部如果有tablayout会遮挡
      *
      * @param activity
      * @param statusBarAlpha
      */
-    public static void setDrawerStatusColor(Activity activity, int statusBarAlpha) {
+    public static void setDrawerStatusAlpha(Activity activity, int statusBarAlpha) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -95,29 +83,42 @@ public class AlexStatusBarUtils {
 
     /**
      * toolbar可伸缩版本
-     * 设置toolbar带drawerLayout状态栏透明度,5.0以上使用默认系统的第二颜色colorPrimaryDark
+     * 设置toolbar带drawerLayout状态栏透明,5.0以上使用默认系统的第二颜色colorPrimaryDark
      * 但是drawerLayout打开的时候会有一条statusbar高度的半透明条
      * 注：必须将drawerLayout设置android:fitsSystemWindows="true"
+     * CoordinatorLayout设置背景颜色，因为4.4状态栏的颜色会跟着它走
+     * 下边内容布局设置背景颜色
      *
      * @param activity
-     * @param statusBarAlpha
      */
-    public static void setDrawerStatusColor(Activity activity, CoordinatorLayout coordinatorLayout, int statusBarAlpha) {
+    public static void setDrawerStatusColor(Activity activity, CoordinatorLayout coordinatorLayout) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            activity.getWindow().setStatusBarColor(Color.argb(statusBarAlpha, 0, 0, 0));
+            activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             ViewGroup contentLayout = (ViewGroup) activity.findViewById(android.R.id.content);
             contentLayout.getChildAt(0).setFitsSystemWindows(false);
             coordinatorLayout.setFitsSystemWindows(true);
-            setTranslucentStatusViewToAct(activity, statusBarAlpha);
+            View mStatusBarView = contentLayout.getChildAt(0);
+            //改变颜色时避免重复添加statusBarView
+            if (mStatusBarView != null && mStatusBarView.getMeasuredHeight() == getStatusBarHeight(activity)) {
+                return;
+            }
+            mStatusBarView = new View(activity);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    getStatusBarHeight(activity));
+            contentLayout.addView(mStatusBarView, lp);
+
         }
     }
 
     /**
-     * 设置普通toolbar带drawerLayout状态栏颜色和透明度,不要把toolbar设置为可滑动
+     * 设置普通toolbar带drawerLayout状态栏
+     * 1.设置toolbar的颜色和颜色光暗度
+     * 2.drawerLayout的顶部透明度
+     * ,不要把toolbar设置为可滑动
      * 注：必须将drawerLayout设置android:fitsSystemWindows="true"
      *
      * @param activity
@@ -159,6 +160,161 @@ public class AlexStatusBarUtils {
     }
 
     /**
+     * 隐藏statusView
+     *
+     * @param activity
+     */
+    public static void hideStatusView(Activity activity) {
+        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
+        View fakeStatusBarView = decorView.findViewById(FAKE_STATUS_VIEW);
+        if (fakeStatusBarView != null) {
+            fakeStatusBarView.setVisibility(View.GONE);
+        }
+        View fakeTranslucentView = decorView.findViewById(FAKE_TRANSLUCENT_VIEW_ID);
+        if (fakeTranslucentView != null) {
+            fakeTranslucentView.setVisibility(View.GONE);
+        }
+    }
+
+    //----------透明状态栏，可调整透明度-------------
+
+    /**
+     * 设置普通toolbar中状态栏透明度
+     * 废弃
+     *
+     * @param activity
+     * @param statusBarAlpha
+     * @deprecated 很少会用到这个
+     */
+    public static void setStatusAlpha(Activity activity, int statusBarAlpha) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            activity.getWindow().setStatusBarColor(Color.argb(statusBarAlpha, 0, 0, 0));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            setTranslucentStatusViewToAct(activity, statusBarAlpha);
+            setRootView(activity);
+        }
+    }
+
+    /**
+     * 设置ImageView为第一控件的全透明状态栏
+     * 注意：需要在下方的控件例如:ToolBar设置android:fitsSystemWindows="true"属性
+     * 否则toolbar会被挤到上边
+     *
+     * @param activity
+     */
+    public static void setTransparentStatusBar(Activity activity, View topView) {
+        setTranslucentStatusBar(activity, topView, 0);
+    }
+
+    /**
+     * 设置ImageView为第一控件的可以调整透明度的状态栏
+     * 注意：需要在下方的控件例如:ToolBar设置android:fitsSystemWindows="true"属性
+     * 否则toolbar会被挤到上边
+     *
+     * @param activity
+     */
+    public static void setTranslucentStatusBar(Activity activity, View topView, int alpha) {
+        setARGBStatusBar(activity, topView, 0, 0, 0, alpha);
+    }
+
+    public static void setARGBStatusBar(Activity activity, View topView, int r, int g, int b, int alpha) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            activity.getWindow().setStatusBarColor(Color.argb(alpha, r, g, b));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            setARGBStatusViewToAct(activity, r, g, b, alpha);
+        }
+        if (topView != null) {
+            boolean isSetPadding = topView.getTag(IS_SET_PADDING_KEY) != null;
+            if (!isSetPadding) {
+                topView.setPadding(topView.getPaddingLeft(), topView.getPaddingTop() + getStatusBarHeight(activity), topView.getPaddingRight(), topView.getPaddingBottom());
+                topView.setTag(IS_SET_PADDING_KEY, true);
+            }
+        }
+    }
+
+    /**
+     * drawerlayout中设置全透明状态栏
+     *
+     * @param activity
+     * @param drawerLayout
+     * @param topView
+     */
+    public static void setTransparentStatusForDrawer(Activity activity, DrawerLayout drawerLayout, View topView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            drawerLayout.setFitsSystemWindows(true);
+            drawerLayout.setClipToPadding(false);
+        }
+        setTransparentStatusBar(activity, topView);
+    }
+
+    /**
+     * drawerlayout中设置透明状态栏的透明度
+     * drawer布局和主布局都会看到
+     *
+     * @param activity
+     * @param drawerLayout
+     * @param topView
+     * @param statusBarAlpha
+     */
+    public static void setStatusAlphaForDrawer(Activity activity, DrawerLayout drawerLayout, View topView, int statusBarAlpha) {
+        setStatusColorAndCAlphaForDrawer(activity, drawerLayout, topView, 0x000000, statusBarAlpha);
+    }
+
+    /**
+     * drawerlayout中设置透明状态栏的颜色和透明度
+     * drawer布局和主布局都会看到
+     *
+     * @param activity
+     * @param drawerLayout
+     * @param topView
+     * @param color
+     * @param statusBarAlpha
+     */
+    public static void setStatusColorAndCAlphaForDrawer(Activity activity, DrawerLayout drawerLayout, View topView, @ColorInt int color, int statusBarAlpha) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            drawerLayout.setFitsSystemWindows(true);
+            drawerLayout.setClipToPadding(false);
+        }
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
+        setARGBStatusBar(activity, topView, r, g, b, statusBarAlpha);
+    }
+
+    public static void setStatusARGBForDrawer(Activity activity, DrawerLayout drawerLayout, View topView, int r, int g, int b, int statusBarAlpha) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            drawerLayout.setFitsSystemWindows(true);
+            drawerLayout.setClipToPadding(false);
+        }
+        setARGBStatusBar(activity, topView, r, g, b, statusBarAlpha);
+    }
+
+    /**
+     * 在有fragment的activity中使用
+     * 注：需要在有状态栏的fragment的最顶端加一个状态栏大小的view
+     *
+     * @param activity
+     * @param alpha
+     */
+    public static void setTranslucentForImageViewInFragment(Activity activity, int alpha) {
+        setTranslucentStatusBar(activity, null, alpha);
+    }
+
+
+    /**
      * CollapsingToolbarLayout状态栏(可折叠图片)
      *
      * @param activity
@@ -169,6 +325,9 @@ public class AlexStatusBarUtils {
      */
     public static void setCollapsingToolbar(Activity activity, CoordinatorLayout coordinatorLayout,
                                             AppBarLayout appBarLayout, ImageView imageView, Toolbar toolbar) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -187,7 +346,7 @@ public class AlexStatusBarUtils {
             toolbar.setLayoutParams(lp);
 
             setTranslucentStatusViewToAct(activity, 0);
-            setCollapsingToolbarStatus(activity, appBarLayout);
+//            setCollapsingToolbarStatus(activity, appBarLayout);
         }
     }
 
@@ -210,72 +369,6 @@ public class AlexStatusBarUtils {
         });
     }
 
-
-    /**
-     * 隐藏statusView
-     *
-     * @param activity
-     */
-    public static void hideStatusView(Activity activity) {
-        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
-        View fakeStatusBarView = decorView.findViewById(FAKE_STATUS_VIEW);
-        if (fakeStatusBarView != null) {
-            fakeStatusBarView.setVisibility(View.GONE);
-        }
-        View fakeTranslucentView = decorView.findViewById(FAKE_TRANSLUCENT_VIEW_ID);
-        if (fakeTranslucentView != null) {
-            fakeTranslucentView.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * 设置ImageView为第一控件的全透明状态栏
-     * 注意：需要在下方的控件例如:ToolBar设置android:fitsSystemWindows="true"属性
-     * 否则toolbar会被挤到上边
-     *
-     * @param activity
-     */
-    public static void setImageViewTransparent(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            activity.getWindow().setStatusBarColor(Color.argb(0, 0, 0, 0));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            setTranslucentStatusViewToAct(activity, 0);
-        }
-    }
-
-    /**
-     * 设置ImageView为第一控件的可以调整透明度的状态栏
-     * 注意：需要在下方的控件例如:ToolBar设置android:fitsSystemWindows="true"属性
-     * 否则toolbar会被挤到上边
-     *
-     * @param activity
-     */
-    public static void setImageViewTranslucent(Activity activity, int alpha) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            activity.getWindow().setStatusBarColor(Color.argb(alpha, 0, 0, 0));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            setTranslucentStatusViewToAct(activity, alpha);
-        }
-    }
-
-    /**
-     * 在有fragment的activity中使用
-     * 注：需要在有状态栏的fragment的最顶端加一个状态栏大小的view
-     *
-     * @param activity
-     * @param alpha
-     */
-    public static void setTranslucentForImageViewInFragment(Activity activity, int alpha) {
-        setImageViewTranslucent(activity, alpha);
-    }
 
     //----------------私有方法----------------------
 
@@ -307,7 +400,7 @@ public class AlexStatusBarUtils {
             if (fakeStatusBarView.getVisibility() == View.GONE) {
                 fakeStatusBarView.setVisibility(View.VISIBLE);
             }
-            fakeStatusBarView.setBackgroundColor(calculateStatusColor(color, statusBarAlpha));
+            fakeStatusBarView.setBackgroundColor(statusColorIntensity(color, statusBarAlpha));
         } else {
             decorView.addView(createStatusBarView(activity, color, statusBarAlpha));
         }
@@ -320,20 +413,31 @@ public class AlexStatusBarUtils {
      * @param statusBarAlpha
      */
     private static void setTranslucentStatusViewToAct(Activity activity, int statusBarAlpha) {
+        setARGBStatusViewToAct(activity, 0, 0, 0, statusBarAlpha);
+    }
+
+    /**
+     * 设置状态栏view的ARGB，如果找到状态栏view则直接设置，否则创建一个再设置
+     *
+     * @param activity
+     * @param statusBarAlpha
+     */
+    private static void setARGBStatusViewToAct(Activity activity, int r, int g, int b, int statusBarAlpha) {
+
         ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
         View fakeStatusBarView = contentView.findViewById(FAKE_TRANSLUCENT_VIEW_ID);
         if (fakeStatusBarView != null) {
             if (fakeStatusBarView.getVisibility() == View.GONE) {
                 fakeStatusBarView.setVisibility(View.VISIBLE);
             }
-            fakeStatusBarView.setBackgroundColor(Color.argb(statusBarAlpha, 0, 0, 0));
+            fakeStatusBarView.setBackgroundColor(Color.argb(statusBarAlpha, r, g, b));
         } else {
-            contentView.addView(createTranslucentStatusBarView(activity, statusBarAlpha));
+            contentView.addView(createARGBStatusBarView(activity, r, g, b, statusBarAlpha));
         }
     }
 
     /**
-     * 创建和状态栏一样高的矩形，用于改变状态栏颜色和透明度
+     * 创建和状态栏一样高的矩形，用于改变状态栏颜色和明暗度
      *
      * @param activity
      * @param color
@@ -346,7 +450,7 @@ public class AlexStatusBarUtils {
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
         statusBarView.setLayoutParams(params);
-        statusBarView.setBackgroundColor(calculateStatusColor(color, alpha));
+        statusBarView.setBackgroundColor(statusColorIntensity(color, alpha));
         statusBarView.setId(FAKE_STATUS_VIEW);
         return statusBarView;
     }
@@ -359,12 +463,27 @@ public class AlexStatusBarUtils {
      * @return
      */
     private static View createTranslucentStatusBarView(Activity activity, int alpha) {
+        return createARGBStatusBarView(activity, 0, 0, 0, alpha);
+    }
+
+    /**
+     * 创建和状态栏一样高的矩形，用于改变状态栏ARGB
+     *
+     * @param activity
+     * @param r
+     * @param g
+     * @param b
+     * @param alpha
+     * @return
+     */
+    private static View createARGBStatusBarView(Activity activity, int r, int g, int b, int alpha) {
         // 绘制一个和状态栏一样高的矩形
         View statusBarView = new View(activity);
+
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
         statusBarView.setLayoutParams(params);
-        statusBarView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+        statusBarView.setBackgroundColor(Color.argb(alpha, r, g, b));
         statusBarView.setId(FAKE_TRANSLUCENT_VIEW_ID);
         return statusBarView;
     }
@@ -381,13 +500,13 @@ public class AlexStatusBarUtils {
     }
 
     /**
-     * 计算状态栏颜色
+     * 计算状态栏颜色明暗度
      *
      * @param color color值
      * @param alpha alpha值
      * @return 最终的状态栏颜色
      */
-    private static int calculateStatusColor(@ColorInt int color, int alpha) {
+    private static int statusColorIntensity(@ColorInt int color, int alpha) {
         if (alpha == 0) {
             return color;
         }
@@ -417,3 +536,4 @@ public class AlexStatusBarUtils {
         }
     }
 }
+

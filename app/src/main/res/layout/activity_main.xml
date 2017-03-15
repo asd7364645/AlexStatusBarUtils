@@ -14,7 +14,6 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
-            android:fitsSystemWindows="true"
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +38,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="3.可滑动的toolbar示例" />
+
+        <Button
+            android:id="@+id/main_scroll_tb_dl_act_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4.可滑动的toolbar和drawerLayout组合示例" />
+        <Button
+            android:id="@+id/main_scroll_img_act_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5.CollapsingToolbarLayout展示图片示例" />
+        <Button
+            android:id="@+id/main_fragment_act_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5.fragment示例" />
 
     </LinearLayout>
 
