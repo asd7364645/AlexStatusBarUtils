@@ -29,7 +29,8 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".FragmentAct"
-            android:label="@string/title_activity_fragment"></activity>
+            android:label="@string/title_activity_fragment" />
+        <activity android:name=".TranDrawerStatusAct"></activity>
     </application>
 
 </manifest>

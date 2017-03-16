@@ -8,6 +8,8 @@
 
     <ImageView
         android:id="@+id/img_status_img"
+        android:src="@mipmap/hzw1"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"

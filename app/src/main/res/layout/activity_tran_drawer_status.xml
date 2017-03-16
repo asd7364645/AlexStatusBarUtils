@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/tran_drawer_drawer"
+    tools:context="com.statusbar_alexleo.alexstatusbarutils.TranDrawerStatusAct">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.Toolbar
+            app:title="全透明状态栏示例"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:id="@+id/tran_drawer_toolbar"
+            android:background="@mipmap/header_bg"
+            android:layout_width="match_parent"
+            app:contentInsetStart="0dp"
+            android:layout_height="81dp">
+        </android.support.v7.widget.Toolbar>
+
+        <CheckBox
+            android:text="全透明"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_toolbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:id="@+id/tran_drawer_cb" />
+
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp"
+            android:text="Alpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_cb"
+            android:layout_alignRight="@+id/tran_drawer_cb"
+            android:layout_alignEnd="@+id/tran_drawer_cb"
+            android:layout_marginTop="5dp"
+            android:id="@+id/tran_drawer_A_tv" />
+
+        <SeekBar
+            android:max="255"
+            android:progress="122"
+            android:id="@+id/tran_drawer_A_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_A_tv"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp" />
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp"
+            android:text="Red"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_A_seek"
+            android:layout_marginTop="5dp"
+            android:id="@+id/tran_drawer_R_tv" />
+
+        <SeekBar
+            android:max="255"
+            android:id="@+id/tran_drawer_R_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_R_tv"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp" />
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp"
+            android:text="Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_R_seek"
+            android:layout_alignRight="@+id/tran_drawer_cb"
+            android:layout_alignEnd="@+id/tran_drawer_cb"
+            android:layout_marginTop="5dp"
+            android:id="@+id/tran_drawer_G_tv" />
+
+        <SeekBar
+            android:max="255"
+            android:id="@+id/tran_drawer_G_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_G_tv"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp" />
+        <TextView
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp"
+            android:text="Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_G_seek"
+            android:layout_alignRight="@+id/tran_drawer_cb"
+            android:layout_alignEnd="@+id/tran_drawer_cb"
+            android:layout_marginTop="5dp"
+            android:id="@+id/tran_drawer_B_tv" />
+
+        <SeekBar
+            android:max="255"
+            android:id="@+id/tran_drawer_B_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tran_drawer_B_tv"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:layout_gravity="start"
+        android:layout_width="match_parent"
+        app:menu="@menu/navigation"
+        app:headerLayout="@layout/navigation_header"
+        android:layout_height="match_parent"/>
+
+</android.support.v4.widget.DrawerLayout>

@@ -54,6 +54,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="5.fragment示例" />
+        <Button
+            android:id="@+id/main_transparent_status_drawer_act_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="6.全透明状态栏以及drawerLayout示例" />
 
     </LinearLayout>
 

@@ -36,7 +36,7 @@ public class ScrollTbAndDlAct extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
 
-        AlexStatusBarUtils.setDrawerStatusColor(this, scroll_tb_dl_coor);
+        AlexStatusBarUtils.setDyeDrawerStatusTransparent(this, scroll_tb_dl_coor);
 
         scroll_tb_dl_tab.addTab(scroll_tb_dl_tab.newTab().setText("one"));
         scroll_tb_dl_tab.addTab(scroll_tb_dl_tab.newTab().setText("two"));
@@ -44,5 +44,14 @@ public class ScrollTbAndDlAct extends AppCompatActivity {
         scroll_tb_dl_tab.addTab(scroll_tb_dl_tab.newTab().setText("four"));
 
     }
+
+
+
+
+
+
+
+
+
 
 }
