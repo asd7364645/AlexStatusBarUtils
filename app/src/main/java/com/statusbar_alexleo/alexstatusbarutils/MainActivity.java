@@ -1,10 +1,10 @@
 package com.statusbar_alexleo.alexstatusbarutils;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toggle.syncState();
         bindEvent();
         //----------------------------------
-        AlexStatusBarUtils.setDyeDrawerStatusColor(this,main_drawer, Color.rgb(255,0,0),0);
+        AlexStatusBarUtils.setDyeDrawerStatusColor(this,main_drawer, ContextCompat.getColor(this,R.color.colorPrimary),0);
     }
 
     private void bindEvent() {
