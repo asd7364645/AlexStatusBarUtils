@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -183,7 +184,7 @@ public class AlexStatusBarUtils {
     //----------透明状态栏，可调整透明度-------------
 
     /**
-     * 设置普通toolbar中状态栏透明度
+     * 设置真正的状态栏透明度
      *
      * @param activity
      * @param statusBarAlpha
@@ -221,6 +222,15 @@ public class AlexStatusBarUtils {
         setARGBStatusBar(activity, topView, 0, 0, 0, alpha);
     }
 
+    /**
+     * 设置透明状态栏版本的状态栏的ARGB
+     * @param activity
+     * @param topView
+     * @param r
+     * @param g
+     * @param b
+     * @param alpha
+     */
     public static void setARGBStatusBar(Activity activity, View topView, int r, int g, int b, int alpha) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return;
@@ -309,7 +319,27 @@ public class AlexStatusBarUtils {
 
 
     /**
+     * 简易的方法，不过这个状态栏是根据CollapsingToolbarLayout的颜色变的
+     * 也就是说在5.0以上的系统当CollapsingToolbarLayout缩到最小的时候
+     * 状态栏也是CollapsingToolbarLayout的颜色，不会是colorPrimaryDark的颜色
+     * @param activity
+     * @param toolbar
+     * @param collapsingToolbarLayout
+     */
+    public static void setCollapsingToolbar(Activity activity,Toolbar toolbar,CollapsingToolbarLayout collapsingToolbarLayout){
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            //设置toolbar的margin
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) toolbar
+                    .getLayoutParams();
+            layoutParams.topMargin = getStatusBarHeight(activity);
+        }
+        setStatusAlpha(activity,0);
+    }
+
+    /**
      * CollapsingToolbarLayout状态栏(可折叠图片)
+     * 5.0缩放到最小之后顶部状态栏的颜色是根据colorPrimaryDark的颜色走的
      *
      * @param activity
      * @param coordinatorLayout
@@ -327,7 +357,6 @@ public class AlexStatusBarUtils {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             activity.getWindow().setStatusBarColor(Color.argb(0, 0, 0, 0));
-
             appBarLayout.setFitsSystemWindows(true);
             imageView.setFitsSystemWindows(true);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -338,7 +367,7 @@ public class AlexStatusBarUtils {
             toolbar.setFitsSystemWindows(true);
             CollapsingToolbarLayout.LayoutParams lp = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
             lp.height = (int) (getStatusBarHeight(activity) +
-                    activity.getResources().getDimension(R.dimen.abc_action_bar_default_height_material));
+                    activity.getResources().getDimension(android.support.v7.appcompat.R.dimen.abc_action_bar_default_height_material));
             toolbar.setLayoutParams(lp);
 
             setTranslucentStatusViewToAct(activity, 0);
@@ -348,6 +377,7 @@ public class AlexStatusBarUtils {
 
     /**
      * Android4.4上CollapsingToolbar折叠时statusBar显示和隐藏
+     * 一般来说可以不用设置这个
      *
      * @param appBarLayout
      */

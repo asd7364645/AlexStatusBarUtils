@@ -1,7 +1,9 @@
 package com.statusbar_alexleo.alexstatusbarutils;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,11 +22,14 @@ public class ScrollingImgActivity extends AppCompatActivity {
     private AppBarLayout scrolling_img_app_bar;
     private ImageView scrolling_img_img;
 
+    private CollapsingToolbarLayout scrolling_img_coll_layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling_img);
         toolbar = (Toolbar) findViewById(R.id.scrolling_img_toolbar);
+        scrolling_img_coll_layout = (CollapsingToolbarLayout) findViewById(R.id.scrolling_img_coll_layout);
         scrolling_img_coor = (CoordinatorLayout) findViewById(R.id.scrolling_img_coor);
         scrolling_img_app_bar = (AppBarLayout) findViewById(R.id.scrolling_img_app_bar);
         scrolling_img_img = (ImageView) findViewById(R.id.scrolling_img_img);
@@ -43,5 +48,14 @@ public class ScrollingImgActivity extends AppCompatActivity {
 
         AlexStatusBarUtils.setCollapsingToolbar(this, scrolling_img_coor, scrolling_img_app_bar, scrolling_img_img, toolbar);
 
+//        AlexStatusBarUtils.setCollapsingToolbar(this,toolbar,scrolling_img_coll_layout);
+
+
+
+    }
+
+    private static int getStatusBarHeight(Activity activity) {
+        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        return activity.getResources().getDimensionPixelSize(resourceId);
     }
 }

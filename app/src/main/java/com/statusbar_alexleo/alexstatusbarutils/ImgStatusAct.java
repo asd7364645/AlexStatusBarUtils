@@ -88,7 +88,6 @@ public class ImgStatusAct extends AppCompatActivity implements SeekBar.OnSeekBar
                 this.progress = progress + "";
                 status_text.setText(this.progress);
                 AlexStatusBarUtils.setARGBStatusBar(this,img_status_toolbar,r,g,b,progress);
-//                AlexStatusBarUtils.setTranslucentStatusBar(this, img_status_toolbar, progress);
                 break;
             case R.id.img_status_r_seek:
                 r = progress;
@@ -137,9 +136,15 @@ public class ImgStatusAct extends AppCompatActivity implements SeekBar.OnSeekBar
         if (isChecked) {
             AlexStatusBarUtils.setTransparentStatusBar(this, img_status_toolbar);
             status_seek.setEnabled(false);
+            img_status_r_seek.setEnabled(false);
+            img_status_g_seek.setEnabled(false);
+            img_status_b_seek.setEnabled(false);
         } else {
             AlexStatusBarUtils.setTranslucentStatusBar(this, img_status_toolbar, 122);
             status_seek.setEnabled(true);
+            img_status_r_seek.setEnabled(true);
+            img_status_g_seek.setEnabled(true);
+            img_status_b_seek.setEnabled(true);
         }
     }
 }
